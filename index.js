@@ -87,6 +87,28 @@ async function run() {
 
         })
 
+        app.get('/manageorders', async (req, res) => {
+
+            const manageOrders = await orderCollection.find({}).toArray()
+
+            // console.log(products)
+
+            res.send(manageOrders)
+        })
+
+
+        app.get('/myorder', async (req, res) => {
+
+            const id = req.query.email
+            const query = { email: id }
+            // console.log(query)
+
+            const result = await orderCollection.find(query).toArray()
+            // console.log(result)
+            res.send(result)
+
+
+        })
 
     }
     finally {
