@@ -28,6 +28,8 @@ async function run() {
         const database = client.db("store");
         const CameraCollection = database.collection("Cameras");
         const ReviewCollection = database.collection("reviews");
+        const orderCollection = database.collection("orders");
+
 
 
 
@@ -45,6 +47,15 @@ async function run() {
             // console.log(products)
 
             res.send(products)
+        })
+
+        app.get('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            // console.log(id)
+            const result = await CameraCollection.find({ _id: ObjectId(id) })
+                .toArray();
+            res.send(result[0]);
+            // console.log(result[0]);
 
 
         })
@@ -61,11 +72,18 @@ async function run() {
         app.get('/reviews', async (req, res) => {
 
             const products = await ReviewCollection.find({}).toArray()
-
             // console.log(products)
-
             res.send(products)
+        })
 
+
+        app.post('/addOrders', async (req, res) => {
+
+            // console.log(req.body)
+            const newOrder = req.body
+            const result = await orderCollection.insertOne(newOrder)
+            res.send(result)
+            console.log(result)
 
         })
 
