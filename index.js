@@ -99,12 +99,24 @@ async function run() {
 
         app.get('/myorder', async (req, res) => {
 
-            const id = req.query.email
-            const query = { email: id }
+            const email = req.query.email
+            const query = { email: email }
             // console.log(query)
 
             const result = await orderCollection.find(query).toArray()
             // console.log(result)
+            res.send(result)
+
+
+        })
+
+        app.delete('/deleteProduct', async (req, res) => {
+
+            const id = req.query.id
+            const query = { _id: ObjectId(id) }
+
+            const result = await CameraCollection.deleteOne(query);
+
             res.send(result)
 
 
