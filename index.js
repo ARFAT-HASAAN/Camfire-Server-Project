@@ -29,8 +29,47 @@ async function run() {
         const CameraCollection = database.collection("Cameras");
         const ReviewCollection = database.collection("reviews");
         const orderCollection = database.collection("orders");
+        const userCollection = database.collection("users");
 
 
+        app.post('/user', async (req, res) => {
+            const newUser = req.body
+            const resutl = await userCollection.insertOne(newUser)
+            res.send(resutl)
+
+
+        })
+
+        app.get('/user/:email', async (req, res) => {
+
+            const email = req.params.email
+            const query = { email }
+            const user = await userCollection.findOne(query)
+
+            let isAdmin = false
+            if (user.role === 'admin') {
+                isAdmin = true;
+            }
+            res.send({ admin: isAdmin })
+
+
+
+        })
+
+        // make admin 
+        app.put('/user', async (req, res) => {
+
+            const user = req.body
+            const filter = { email: user.email };
+            const updateDoc = {
+                $set: { role: "admin" }
+            };
+
+            const result = await userCollection.updateOne(filter, updateDoc);
+            // console.log(result)
+            res.send(result)
+
+        })
 
 
         app.post('/products', async (req, res) => {
@@ -118,6 +157,22 @@ async function run() {
             const result = await CameraCollection.deleteOne(query);
 
             res.send(result)
+
+
+        })
+
+
+        //delete orders 
+        app.delete('/deleteOrders', async (req, res) => {
+
+            const id = req.query.id
+            const query = { _id: ObjectId(id) }
+
+            const result = await orderCollection.deleteOne(query);
+
+            console.log(result)
+            res.send(result)
+
 
 
         })
